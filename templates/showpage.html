@@ -22,7 +22,7 @@
         </div>
         {% endif %}
         {% for post in posts %}
-        <h4 style="text-align: center;">{{post[0]}} - {{post[2]}}</h4><br>
+        <h4 style="text-align: center;"><a href="./posts/{{post[3]}}">title: "{{post[0]}}"</a> - {{post[2]}}</h4>
         {% endfor %}
     </body>
 </html>

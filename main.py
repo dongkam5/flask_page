@@ -21,7 +21,7 @@ def create_table_post():
     try:
         db=dbcon()
         cur=db.cursor()
-        cur.execute("CREATE TABLE POSTS (title varchar(50), detail varchar(1000), name varchar(15))")
+        cur.execute("CREATE TABLE POSTS (title varchar(50), detail varchar(1000), name varchar(15), post_num INT(5))")
         db.commit()
     except Exception as e:
         print('db error: ',e)
@@ -40,12 +40,12 @@ def insert_data(id,password,name,age):
     finally:
         db.close()
 
-def insert_data_post(title,detail,id):
+def insert_data_post(title,detail,id,post_num):
     db=dbcon()
     try:
         cur= db.cursor()
-        setdata_post=(title,detail,id)
-        cur.execute("INSERT INTO POSTS VALUES (?,?,?)",setdata_post)
+        setdata_post=(title,detail,id,post_num)
+        cur.execute("INSERT INTO POSTS VALUES (?,?,?,?)",setdata_post)
         db.commit()
     except Exception as e:
         print('db error:', e)
@@ -152,10 +152,35 @@ def write():
         id=request.form['id']
         title=request.form['title']
         detail=request.form['detail']
-        insert_data_post(title,detail,id)
+        post_num=len(show_post_info())+1
+        with open("templates/posts/{}.html".format(post_num),"w")as p:
+            p.write('''
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <h2 style="margin: auto; text-align: center; margin-top:60px;">{}</h2>
+        <h4 style="margin: auto; text-align: center; margin-top:60px;">by {}</h4> 
+        <div class="info" style="text-align: center; margin: auto;">
+            <div class="subinfo" style="margin-top: 50px";>
+                <p>{}</p>
+            </div>
+            <div class="subinfo" style="margin: auto; text-align: center; margin-top:60px;">
+                <form action="/showpage">
+                    <input type="submit"  value="BACK TO LIST">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+            '''.format(title,id,detail))
+        insert_data_post(title,detail,id,post_num)
         return  redirect(url_for('showpage'))
     elif (request.method=='GET'):
         return render_template('write.html',id=session['id'])
-
+@app.route('/posts/<post_num>')
+def post(post_num):
+    return render_template("/posts/{}.html".format(post_num))
 if __name__=="__main__":
     app.run(debug=True)
