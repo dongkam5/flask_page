@@ -16,6 +16,18 @@ def create_table():
         print('db error: ',e)
     finally:
         db.close()
+
+def create_table_post():
+    try:
+        db=dbcon()
+        cur=db.cursor()
+        cur.execute("CREATE TABLE POSTS (title varchar(50), detail varchar(1000), name varchar(15))")
+        db.commit()
+    except Exception as e:
+        print('db error: ',e)
+    finally:
+        db.close()
+
 def insert_data(id,password,name,age):
     db=dbcon()
     try:
@@ -27,6 +39,19 @@ def insert_data(id,password,name,age):
         print('db error:', e)
     finally:
         db.close()
+
+def insert_data_post(title,detail,id):
+    db=dbcon()
+    try:
+        cur= db.cursor()
+        setdata_post=(title,detail,id)
+        cur.execute("INSERT INTO POSTS VALUES (?,?,?)",setdata_post)
+        db.commit()
+    except Exception as e:
+        print('db error:', e)
+    finally:
+        db.close()
+
 def select_all():
     ret = list()
     try:
@@ -38,7 +63,19 @@ def select_all():
         print('db Error:',e)
     finally:
         db.close()
-        return ret    
+        return ret
+def select_all_post():
+    ret = list()
+    try:
+        db=dbcon()
+        cur=db.cursor()
+        cur.execute("SELECT * FROM POSTS")
+        ret=cur.fetchall()
+    except Exception as e:
+        print('db Error:',e)
+    finally:
+        db.close()
+        return ret   
 def checkclient(id,password):
     clients=select_all()
     for client in clients:
@@ -55,17 +92,23 @@ def show_clinet_info(id):
     for client in clients:
         if client[0]==id:
             return client
+def show_post_info():
+    posts=select_all_post()
+    return posts
 create_table()
-
+create_table_post()
 @app.route('/')
 def index():
     if isLogged():
-        return render_template('index.html', id=session['id'])
+        return render_template('index.html', name=(show_clinet_info(session['id'])[2]))
     else:
-        return render_template('index.html',id='None')
+        return render_template('index.html',name='None')
 @app.route('/showpage')
 def showpage():
-    return render_template('showpage.html')
+    if isLogged():
+        return render_template('showpage.html', name=(show_clinet_info(session['id'])[2]) , posts=show_post_info())
+    else:
+        return render_template('showpage.html',name='None', posts=show_post_info())
 @app.route('/login',methods=['GET','POST'])
 def login():
     if (request.method=='POST'):
@@ -103,6 +146,16 @@ def signup():
         return redirect(url_for('index'))
     elif (request.method=='GET'):
         return render_template('signup.html')
+@app.route('/write', methods=['GET','POST'])
+def write():
+    if (request.method=='POST'):
+        id=request.form['id']
+        title=request.form['title']
+        detail=request.form['detail']
+        insert_data_post(title,detail,id)
+        return  redirect(url_for('showpage'))
+    elif (request.method=='GET'):
+        return render_template('write.html',id=session['id'])
 
 if __name__=="__main__":
     app.run(debug=True)
