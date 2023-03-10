@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <body style="text-align: center;;" >
+            <h2 style="margin-top: 60px;">LOGIN</h2><br>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <h2 style="text-align: center; margin: auto;"> {{messages[-1]}}</h2><br>
+            {% endif %}
+            {% endwith %}
+            <form action="" method="POST">
+            <input name="id" type="text" placeholder="ENTER YOUR ID" style="width: 200px; margin-top: 20px;"><br>
+            <input name="password" type="password" placeholder="ENTER YOUR PASSWORD" style="width: 200px;margin-top: 30px;"><br>
+            <input type="submit" value="Enter" style="margin-top: 30px;">
+            </form>
+            <br>
+            <br>    
+            <form action="/">
+                <input type="submit" value="BACK TO HOME">
+            </form>
+        </body>
+    </head>
+</html>

@@ -1,0 +1,13 @@
+.form_ {
+    display: flex;
+}
+.submenu{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: auto;
+    margin-top: 0px;
+    margin-bottom: 0px; 
+    width: 200px;
+    height: 200px;
+}

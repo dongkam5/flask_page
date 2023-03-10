@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="{{url_for('static',filename='css/signup.css')}}">
+    </head>
+    <body>
+        <h2 style="text-align: center;"> ENTER YOUR INFO</h2>
+        <form action="" method="POST">
+            <div class="submenu">
+            <h3>ID</h3><br>
+            <input type="text" name="id" placeholder="ID">
+            </div>
+            <div class="submenu">
+            <h3>PASSWORD</h3><br>
+            <input type="password" name="password" placeholder="PASSWORD">
+        </div>
+            <div class="submenu">
+            <h3>NAME</h3><br>
+            <input type="text" name="name" placeholder="name">
+        </div>
+            <div class="submenu">
+            <h3>AGE</h3><br>
+            <input type="text" name="age" placeholder="AGE">
+            </div>
+            <div class="submenu">
+            <h3><input type="submit" value="send"></h3>
+        </div>
+        <div class="submenu"> 
+        <form action="/">
+            <h3><input type="submit" value="BACK TO HOME"></h3>
+        </div>
+        </form>
+        </form>
+
+    </body>
+</html>
