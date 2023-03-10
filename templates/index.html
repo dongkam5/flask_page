@@ -5,16 +5,20 @@
     </head>
     <body>
         <h2 style="text-align: center;"> DONGKAM STORY</h2>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <h2 style="text-align: center; margin: auto;"> {{messages[-1]}}</h2><br>
-        {% endif %}
-        {% endwith %}
+        {% if id != 'None' %}
+        <h2  style="text-align: center; margin: auto";> {{id}} WELCOME!</h2><br>
+        <div class="menu"> 
+            <div class="submenu"> <a href="{{url_for('showpage')}}">STORY</a></div>
+            <div class="submenu"> <a href="{{url_for('logout')}}">Logout</a></div>
+            <div class="submenu"> <a href="{{url_for('mypage')}}">My Page</a></div>
+        </div>
+        {% else %}
         <div class="menu"> 
             <div class="submenu"> <a href="{{url_for('showpage')}}">STORY</a></div>
             <div class="submenu"> <a href="{{url_for('login')}}">Login</a></div>
             <div class="submenu"> <a href="{{url_for('mypage')}}">My Page</a></div>
             <div class="submenu"><a href="{{url_for('signup')}}">Sign up</a></div>
         </div>
+        {% endif %}
     </body>
 </html>

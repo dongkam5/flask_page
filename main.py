@@ -43,13 +43,26 @@ def checkclient(id,password):
     clients=select_all()
     for client in clients:
         if client[0]==id and client[1]==password: ## 0=id, 1= password
-            return client[2]
+            return client
     return None
+def isLogged():
+    if 'id' in session:
+        id=session['id']
+        return True
+    return False
+def show_clinet_info(id):
+    clients=select_all()
+    for client in clients:
+        if client[0]==id:
+            return client
 create_table()
-LoggedIn=False
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if isLogged():
+        return render_template('index.html', id=session['id'])
+    else:
+        return render_template('index.html',id='None')
 @app.route('/showpage')
 def showpage():
     return render_template('showpage.html')
@@ -58,17 +71,25 @@ def login():
     if (request.method=='POST'):
         id=request.form['id']
         password=request.form['password']
-        name=checkclient(id,password)
-        if not name:
+        client_info=checkclient(id,password)
+        if client_info == None:
             flash("Please ENTER CORRECTLY")
             return redirect(url_for('login'))
-        flash("WELCOME   "+ name)
+        session['id']=client_info[0]
         return redirect(url_for('index'))
     else:
         return render_template('login.html')
+@app.route('/logout')
+def logout():
+    session.pop('id',None)
+    return redirect(url_for('index'))
 @app.route('/mypage')
 def mypage():
-    return render_template('mypage.html')
+    if isLogged():
+        client_info=show_clinet_info(session['id'])
+        return render_template('mypage.html',client_info=client_info)
+    else:
+        return redirect(url_for('login'))
 @app.route('/signup', methods=['GET','POST'])
 def signup():
     if (request.method=='POST'):

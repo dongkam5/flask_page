@@ -1,9 +1,28 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <link rel="stylesheet" href="{{url_for('static',filename='css/mypage.css')}}">
     </head>
     <body>
-        My Page
+        <h2 style="margin: auto; text-align: center; margin-top:60px;"> MY PAGE</h2>
+        <div class="info">
+            <div class="subinfo">
+                <h3 style="margin-top: 50px;"> ID = {{client_info[0]}}</h3><br>
+            </div>
+            <div class="subinfo">
+                <h3> PASSWORD = {{client_info[1]}}</h3><br>
+            </div>
+            <div class="subinfo">
+                <h3> NAME = {{client_info[2]}}</h3><br>
+            </div>
+            <div class="subinfo">
+                <h3> AGE = {{client_info[3]}}</h3><br>
+            </div>
+            <div class="subinfo">
+                <form action="/">
+                    <input type="submit"  value="BACK TO HOME">
+                </form>
+            </div>
+        </div>
     </body>
 </html>
