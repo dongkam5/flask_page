@@ -180,7 +180,7 @@ def login():
         return render_template('login.html')
 @app.route('/logout')
 def logout():
-    session.pop('id',"None")
+    session.pop('id',None)
     return redirect(url_for('index'))
 @app.route('/mypage')
 def mypage():
@@ -226,7 +226,7 @@ def update():
             id=request.form['id']
             posts=show_post_info()
             for post in posts:
-                if post[3]==int(post_num_update) and post[2]==id:
+                if post[3]==int(post_num_update) and session['id']==id:
                     return render_template('update.html', post=post)
             return redirect(url_for('showpage'))
     
@@ -241,7 +241,7 @@ def delete():
             id=request.form['id']
             posts=show_post_info()
             for post in posts:
-                if post[3]==int(post_num_delete) and post[2]==id:
+                if post[3]==int(post_num_delete) and session['id']==id:
                     delete_data_post(int(post[3]))
                     with open("templates/posts/{}.html".format(post_num_delete),"w")as p:
                         p.write('''
