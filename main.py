@@ -21,7 +21,7 @@ def create_table_post():
     try:
         db=dbcon()
         cur=db.cursor()
-        cur.execute("CREATE TABLE POSTS (title varchar(50), detail varchar(1000), name varchar(15), post_num INT(5))")
+        cur.execute("CREATE TABLE POSTS (title varchar(50), detail varchar(1000), id varchar(15), post_num INT(5))")
         db.commit()
     except Exception as e:
         print('db error: ',e)
@@ -51,7 +51,27 @@ def insert_data_post(title,detail,id,post_num):
         print('db error:', e)
     finally:
         db.close()
-
+def update_data_post(title,detail,id,post_num):
+    db=dbcon()
+    try:
+        cur= db.cursor()
+        setdata_post=(title,detail,id,post_num)
+        cur.execute("UPDATE POSTS SET title=? ,detail=? ,id=? where post_num=?",setdata_post)
+        db.commit()
+    except Exception as e:
+        print('db error:', e)
+    finally:
+        db.close()
+def delete_data_post(post_num):
+    db=dbcon()
+    try:
+        cur= db.cursor()
+        cur.execute("DELETE FROM POSTS WHERE post_num=?",str(post_num))
+        db.commit()
+    except Exception as e:
+        print('db error:', e)
+    finally:
+        db.close()
 def select_all():
     ret = list()
     try:
@@ -95,8 +115,44 @@ def show_clinet_info(id):
 def show_post_info():
     posts=select_all_post()
     return posts
+def write_templates(title,id,detail,post_num):
+    with open("templates/posts/{}.html".format(post_num),"w")as p:
+            p.write('''
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <h2 style="margin: auto; text-align: center; margin-top:60px;">{}</h2>
+        <h4 style="margin: auto; text-align: center; margin-top:60px;">by {}</h4> 
+        <div class="info" style="text-align: center; margin: auto;">
+            <div class="subinfo" style="margin-top: 50px";>
+                <p>{}</p>
+            </div>
+            <div class="APPEND" style="display: flex; justify-content: center; text-align: center; margin-top: 60px;">
+                <form action="../update" method="POST">
+                    <input type="hidden" value="{}" name="post_num_update">
+                    <input type="hidden" value="{}" name="id">
+                    <input type="submit" value="UPDATE">
+                </form>
+                <form action="../delete" method="POST">
+                    <input type="hidden" value="{}" name="post_num_delete">
+                    <input type="hidden" value="{}" name="id">
+                    <input type="submit" value="DELETE">
+                </form>
+        </div>
+            <div class="subinfo" style="margin: auto; text-align: center; margin-top:60px;">
+                <form action="/showpage">
+                    <input type="submit"  value="BACK TO LIST">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+            '''.format(title,id,detail,post_num,id,post_num,id))
 create_table()
 create_table_post()
+
 @app.route('/')
 def index():
     if isLogged():
@@ -124,7 +180,7 @@ def login():
         return render_template('login.html')
 @app.route('/logout')
 def logout():
-    session.pop('id',None)
+    session.pop('id',"None")
     return redirect(url_for('index'))
 @app.route('/mypage')
 def mypage():
@@ -153,28 +209,7 @@ def write():
         title=request.form['title']
         detail=request.form['detail']
         post_num=len(show_post_info())+1
-        with open("templates/posts/{}.html".format(post_num),"w")as p:
-            p.write('''
-<!DOCTYPE html>
-<html>
-    <head>
-    </head>
-    <body>
-        <h2 style="margin: auto; text-align: center; margin-top:60px;">{}</h2>
-        <h4 style="margin: auto; text-align: center; margin-top:60px;">by {}</h4> 
-        <div class="info" style="text-align: center; margin: auto;">
-            <div class="subinfo" style="margin-top: 50px";>
-                <p>{}</p>
-            </div>
-            <div class="subinfo" style="margin: auto; text-align: center; margin-top:60px;">
-                <form action="/showpage">
-                    <input type="submit"  value="BACK TO LIST">
-                </form>
-            </div>
-        </div>
-    </body>
-</html>
-            '''.format(title,id,detail))
+        write_templates(title,id,detail,post_num)
         insert_data_post(title,detail,id,post_num)
         return  redirect(url_for('showpage'))
     elif (request.method=='GET'):
@@ -182,5 +217,68 @@ def write():
 @app.route('/posts/<post_num>')
 def post(post_num):
     return render_template("/posts/{}.html".format(post_num))
+
+@app.route('/update', methods=['POST'])
+def update():
+    if isLogged():
+        if request.method=='POST':
+            post_num_update=request.form['post_num_update']
+            id=request.form['id']
+            posts=show_post_info()
+            for post in posts:
+                if post[3]==int(post_num_update) and post[2]==id:
+                    return render_template('update.html', post=post)
+            return redirect(url_for('showpage'))
+    
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/delete',methods=['POST'])
+def delete():
+    if isLogged():
+        if request.method=='POST':
+            post_num_delete=request.form['post_num_delete']
+            id=request.form['id']
+            posts=show_post_info()
+            for post in posts:
+                if post[3]==int(post_num_delete) and post[2]==id:
+                    delete_data_post(int(post[3]))
+                    with open("templates/posts/{}.html".format(post_num_delete),"w")as p:
+                        p.write('''
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <h1 style="text-align: center;"> THIS PAGE IS DELETED</h1><br>
+        <div style=" text-align: center; justify-content: center;">
+        <form action="/del_save" method="POST">
+            <input type="submit" value="GO TO INDEX">
+        </form>
+    </div>  
+    </body>
+</html>
+''')
+            return redirect(url_for('showpage'))
+    
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/save',methods=['POST'])
+def save():
+    if isLogged():
+        title=request.form['title']
+        detail=request.form['detail']
+        id=request.form['id']
+        post_num=request.form['post_num']
+        write_templates(title,id,detail,post_num)
+        update_data_post(title,detail,id,post_num)
+        return redirect(url_for('showpage'))
+    else:
+        return redirect(url_for('login'))
+@app.route('/del_save',methods=['POST'])
+def del_save():
+    return redirect(url_for('showpage'))
+
 if __name__=="__main__":
     app.run(debug=True)

@@ -6,7 +6,7 @@
     <body>
         <h2 style="text-align: center;"> DONGKAM STORY</h2>
         {% if name != 'None' %}
-        <h2  style="text-align: center; margin: auto";> {{name}} WELCOME!</h2><br>
+        <h2  style="text-align: center; margin: auto";> 😁&nbsp;{{name}} WELCOME!&nbsp;😁</h2><br>
         <div class="menu"> 
             <div class="submenu"> <a href="{{url_for('showpage')}}">STORY</a></div>
             <div class="submenu"> <a href="{{url_for('logout')}}">Logout</a></div>
@@ -15,14 +15,14 @@
         </div>
         {% else %}
         <div class="menu"> 
-            <div class="submenu"> <a href="{{url_for('showpage')}}">STORY</a></div>
+            <div class="submenu"> <a href="{{url_for('showpage')}}" >STORY</a></div>
             <div class="submenu"> <a href="{{url_for('login')}}">Login</a></div>
             <div class="submenu"> <a href="{{url_for('mypage')}}">My Page</a></div>
             <div class="submenu"><a href="{{url_for('signup')}}">Sign up</a></div>
         </div>
         {% endif %}
         {% for post in posts %}
-        <h4 style="text-align: center;"><a href="./posts/{{post[3]}}">title: "{{post[0]}}"</a> - {{post[2]}}</h4>
+        <h4 style="text-align: center ;"><a href="./posts/{{post[3]}}" style="text-decoration-line: none;">[{{post[0]}}]&nbsp;&nbsp;&nbsp;---&nbsp;&nbsp;&nbsp;{{post[2]}}</h4>
         {% endfor %}
     </body>
 </html>
