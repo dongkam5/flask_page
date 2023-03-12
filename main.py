@@ -150,6 +150,7 @@ def write_templates(title,id,detail,post_num):
     </body>
 </html>
             '''.format(title,id,detail,post_num,id,post_num,id))
+
 create_table()
 create_table_post()
 
@@ -281,4 +282,4 @@ def del_save():
     return redirect(url_for('showpage'))
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(hosts='0.0.0.0',port=5000,debug=True)
