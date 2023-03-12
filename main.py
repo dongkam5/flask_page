@@ -153,7 +153,7 @@ def write_templates(title,id,detail,post_num):
 
 create_table()
 create_table_post()
-
+post_num_create=0
 @app.route('/')
 def index():
     if isLogged():
@@ -209,7 +209,7 @@ def write():
         id=request.form['id']
         title=request.form['title']
         detail=request.form['detail']
-        post_num=len(show_post_info())+1
+        post_num=post_num_create+1
         write_templates(title,id,detail,post_num)
         insert_data_post(title,detail,id,post_num)
         return  redirect(url_for('showpage'))
