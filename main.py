@@ -153,7 +153,6 @@ def write_templates(title,id,detail,post_num):
 
 create_table()
 create_table_post()
-post_num_create=0
 @app.route('/')
 def index():
     if isLogged():
@@ -162,6 +161,7 @@ def index():
         return render_template('index.html',name='None')
 @app.route('/showpage')
 def showpage():
+    print(show_post_info())
     if isLogged():
         return render_template('showpage.html', name=(show_clinet_info(session['id'])[2]) , posts=show_post_info())
     else:
@@ -209,7 +209,14 @@ def write():
         id=request.form['id']
         title=request.form['title']
         detail=request.form['detail']
-        post_num=post_num_create+1
+        if not show_post_info():
+            post_num=1
+        else:
+            post_num=0
+            posts=show_post_info()
+            for post in posts:
+                post_num=max(post_num,post[3])
+            post_num+=1
         write_templates(title,id,detail,post_num)
         insert_data_post(title,detail,id,post_num)
         return  redirect(url_for('showpage'))
