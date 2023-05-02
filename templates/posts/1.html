@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <h2 style="margin: auto; text-align: center; margin-top:60px;">First Writing</h2>
+        <h4 style="margin: auto; text-align: center; margin-top:60px;">by dongkam</h4> 
+        <div class="info" style="text-align: center; margin: auto;">
+            <div class="subinfo" style="margin-top: 50px";>
+                <p>HAHA</p>
+            </div>
+            <div class="APPEND" style="display: flex; justify-content: center; text-align: center; margin-top: 60px;">
+                <form action="../update" method="POST">
+                    <input type="hidden" value="1" name="post_num_update">
+                    <input type="hidden" value="dongkam" name="id">
+                    <input type="submit" value="UPDATE">
+                </form>
+                <form action="../delete" method="POST">
+                    <input type="hidden" value="1" name="post_num_delete">
+                    <input type="hidden" value="dongkam" name="id">
+                    <input type="submit" value="DELETE">
+                </form>
+        </div>
+            <div class="subinfo" style="margin: auto; text-align: center; margin-top:60px;">
+                <form action="/showpage">
+                    <input type="submit"  value="BACK TO LIST">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+            
